@@ -22,7 +22,7 @@ notifyemail.Reboost(mail_host='smtp.163.com',
                     mail_user='chenp_cpeng@163.com',
                     mail_pass='WLHUFEWZWCIQNCBZ', 
                     # default_receivers='2915346521@qq.com', 
-                    log_root_path='logs', 
+                    log_root_path='logs',
                     max_log_cnt=5)
 '''
 训练自己的语义分割模型一定需要注意以下几点：
