@@ -21,7 +21,7 @@ from utils.utils_fit import fit_one_epoch
 notifyemail.Reboost(mail_host='smtp.163.com', 
                     mail_user='chenp_cpeng@163.com',
                     mail_pass='WLHUFEWZWCIQNCBZ', 
-                    default_receivers='2915346521@qq.com', 
+                    # default_receivers='2915346521@qq.com', 
                     log_root_path='logs', 
                     max_log_cnt=5)
 '''
@@ -55,10 +55,10 @@ if __name__ == "__main__":
     #                   Windows系统下默认使用DP模式调用所有显卡，不支持DDP。
     #   DP模式：
     #       设置            distributed = False
-    #       在终端中输入    CUDA_VISIBLE_DEVICES=0,1 python train.py
+    #       在终端中输入    CUDA_VISIBLE_DEVICES=0 python train.py
     #   DDP模式：
     #       设置            distributed = True
-    #       在终端中输入    CUDA_VISIBLE_DEVICES=0,1 python -m torch.distributed.launch --nproc_per_node=2 train.py
+    #       在终端中输入    CUDA_VISIBLE_DEVICES=0 python -m torch.distributed.launch --nproc_per_node=2 train.py
     #---------------------------------------------------------------------#
     distributed     = False
     #---------------------------------------------------------------------#
@@ -225,7 +225,7 @@ if __name__ == "__main__":
     #------------------------------------------------------------------#
     #   VOCdevkit_path  数据集路径
     #------------------------------------------------------------------#
-    VOCdevkit_path  = 'datasets'
+    VOCdevkit_path  = 'datasets-cp'
     #------------------------------------------------------------------#
     #   建议选项：
     #   种类少（几类）时，设置为True
@@ -251,7 +251,7 @@ if __name__ == "__main__":
     #                   keras里开启多线程有些时候速度反而慢了许多
     #                   在IO为瓶颈的时候再开启多线程，即GPU运算速度远大于读取图片的速度。
     #------------------------------------------------------------------#
-    num_workers         = 30
+    num_workers         = 4
 
     #------------------------------------------------------#
     #   设置用到的显卡
@@ -526,4 +526,4 @@ if __name__ == "__main__":
 
         if local_rank == 0:
             loss_history.writer.close()
-    notifyemail.send_log()
+    notifyemail.send_log("2915346521@qq.com")
