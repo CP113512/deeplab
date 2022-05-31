@@ -16,11 +16,11 @@ from utils.dataloader import DeeplabDataset, deeplab_dataset_collate
 from utils.utils import download_weights, show_config
 from utils.utils_fit import fit_one_epoch
 import notifyemail
-
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 notifyemail.Reboost(mail_host='smtp.163.com', 
                     mail_user='chenp_cpeng@163.com',
                     mail_pass='WLHUFEWZWCIQNCBZ', 
-                    default_receivers='2915346521@qq.com', 
+                    # default_receivers='2915346521@qq.com', 
                     log_root_path='logs', 
                     max_log_cnt=5)
 '''
@@ -42,7 +42,7 @@ notifyemail.Reboost(mail_host='smtp.163.com',
 3、训练好的权值文件保存在logs文件夹中，每个训练世代（Epoch）包含若干训练步长（Step），每个训练步长（Step）进行一次梯度下降。
    如果只是训练了几个Step是不会保存的，Epoch和Step的概念要捋清楚一下。
 '''
-if __name__ == "__main__":
+def main():
     #---------------------------------#
     #   Cuda    是否使用Cuda
     #           没有GPU可以设置成False
@@ -250,7 +250,7 @@ if __name__ == "__main__":
     #                   keras里开启多线程有些时候速度反而慢了许多
     #                   在IO为瓶颈的时候再开启多线程，即GPU运算速度远大于读取图片的速度。
     #------------------------------------------------------------------#
-    num_workers         = 14
+    num_workers         = 0
 
     #------------------------------------------------------#
     #   设置用到的显卡
@@ -526,3 +526,6 @@ if __name__ == "__main__":
         if local_rank == 0:
             loss_history.writer.close()
     notifyemail.send_log("2915346521@qq.com")
+
+if __name__ == "__main__":
+    main()
