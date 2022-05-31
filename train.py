@@ -15,7 +15,14 @@ from utils.callbacks import LossHistory, EvalCallback
 from utils.dataloader import DeeplabDataset, deeplab_dataset_collate
 from utils.utils import download_weights, show_config
 from utils.utils_fit import fit_one_epoch
+import notifyemail
 
+notifyemail.Reboost(mail_host='smtp.163.com', 
+                    mail_user='chenp_cpeng@163.com',
+                    mail_pass='WLHUFEWZWCIQNCBZ', 
+                    default_receivers='2915346521@qq.com', 
+                    log_root_path='logs', 
+                    max_log_cnt=5)
 '''
 训练自己的语义分割模型一定需要注意以下几点：
 1、训练前仔细检查自己的格式是否满足要求，该库要求数据集格式为VOC格式，需要准备好的内容有输入图片和标签
@@ -217,7 +224,7 @@ if __name__ == "__main__":
     #------------------------------------------------------------------#
     #   VOCdevkit_path  数据集路径
     #------------------------------------------------------------------#
-    VOCdevkit_path  = 'datasets'
+    VOCdevkit_path  = 'datasets-cp'
     #------------------------------------------------------------------#
     #   建议选项：
     #   种类少（几类）时，设置为True
@@ -518,3 +525,4 @@ if __name__ == "__main__":
 
         if local_rank == 0:
             loss_history.writer.close()
+    notifyemail.send_log("2915346521@qq.com")
