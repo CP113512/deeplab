@@ -17,11 +17,7 @@ train_percent       = 0.9
 #   指向VOC数据集所在的文件夹
 #   默认指向根目录下的VOC数据集
 #-------------------------------------------------------#
-<<<<<<< HEAD
-VOCdevkit_path      = 'datasets'
-=======
 VOCdevkit_path      = 'datasets-cp'
->>>>>>> 41d81ebbc28a67af090752236f979062da9bc666
 
 if __name__ == "__main__":
     random.seed(0)
