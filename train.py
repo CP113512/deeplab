@@ -8,6 +8,8 @@ import torch.distributed as dist
 import torch.optim as optim
 from torch.utils.data import DataLoader
 
+import notifyemail
+
 from nets.deeplabv3_plus import DeepLab
 from nets.deeplabv3_training import (get_lr_scheduler, set_optimizer_lr,
                                      weights_init)
@@ -15,13 +17,21 @@ from utils.callbacks import LossHistory, EvalCallback
 from utils.dataloader import DeeplabDataset, deeplab_dataset_collate
 from utils.utils import download_weights, show_config
 from utils.utils_fit import fit_one_epoch
+<<<<<<< HEAD
 import notifyemail
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+=======
+
+>>>>>>> 41d81ebbc28a67af090752236f979062da9bc666
 notifyemail.Reboost(mail_host='smtp.163.com', 
                     mail_user='chenp_cpeng@163.com',
                     mail_pass='WLHUFEWZWCIQNCBZ', 
                     # default_receivers='2915346521@qq.com', 
+<<<<<<< HEAD
                     log_root_path='logs', 
+=======
+                    log_root_path='logs',
+>>>>>>> 41d81ebbc28a67af090752236f979062da9bc666
                     max_log_cnt=5)
 '''
 训练自己的语义分割模型一定需要注意以下几点：
@@ -54,10 +64,10 @@ def main():
     #                   Windows系统下默认使用DP模式调用所有显卡，不支持DDP。
     #   DP模式：
     #       设置            distributed = False
-    #       在终端中输入    CUDA_VISIBLE_DEVICES=0,1 python train.py
+    #       在终端中输入    CUDA_VISIBLE_DEVICES=0 python train.py
     #   DDP模式：
     #       设置            distributed = True
-    #       在终端中输入    CUDA_VISIBLE_DEVICES=0,1 python -m torch.distributed.launch --nproc_per_node=2 train.py
+    #       在终端中输入    CUDA_VISIBLE_DEVICES=0 python -m torch.distributed.launch --nproc_per_node=2 train.py
     #---------------------------------------------------------------------#
     distributed     = False
     #---------------------------------------------------------------------#
@@ -224,7 +234,7 @@ def main():
     #------------------------------------------------------------------#
     #   VOCdevkit_path  数据集路径
     #------------------------------------------------------------------#
-    VOCdevkit_path  = 'datasets'
+    VOCdevkit_path  = 'datasets-cp'
     #------------------------------------------------------------------#
     #   建议选项：
     #   种类少（几类）时，设置为True
@@ -250,7 +260,11 @@ def main():
     #                   keras里开启多线程有些时候速度反而慢了许多
     #                   在IO为瓶颈的时候再开启多线程，即GPU运算速度远大于读取图片的速度。
     #------------------------------------------------------------------#
+<<<<<<< HEAD
     num_workers         = 0
+=======
+    num_workers         = 12
+>>>>>>> 41d81ebbc28a67af090752236f979062da9bc666
 
     #------------------------------------------------------#
     #   设置用到的显卡
@@ -526,6 +540,9 @@ def main():
         if local_rank == 0:
             loss_history.writer.close()
     notifyemail.send_log("2915346521@qq.com")
+<<<<<<< HEAD
 
 if __name__ == "__main__":
     main()
+=======
+>>>>>>> 41d81ebbc28a67af090752236f979062da9bc666
