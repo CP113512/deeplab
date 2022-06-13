@@ -22,20 +22,20 @@ if __name__ == "__main__":
     #------------------------------#
     #   分类个数+1、如2+1
     #------------------------------#
-    num_classes     = 21
+    num_classes     = 5
     #--------------------------------------------#
     #   区分的种类，和json_to_dataset里面的一样
     #--------------------------------------------#
-    name_classes    = ["background","aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat", "chair", "cow", "diningtable", "dog", "horse", "motorbike", "person", "pottedplant", "sheep", "sofa", "train", "tvmonitor"]
+    name_classes    = ["background","leaf", "brownspot", "blast", "bacterialblight"]
     # name_classes    = ["_background_","cat","dog"]
     #-------------------------------------------------------#
     #   指向VOC数据集所在的文件夹
     #   默认指向根目录下的VOC数据集
     #-------------------------------------------------------#
-    VOCdevkit_path  = 'VOCdevkit'
+    VOCdevkit_path  = 'D:\yesy\\three_datasets-AOP\datasets-ct'
 
-    image_ids       = open(os.path.join(VOCdevkit_path, "VOC2007/ImageSets/Segmentation/val.txt"),'r').read().splitlines() 
-    gt_dir          = os.path.join(VOCdevkit_path, "VOC2007/SegmentationClass/")
+    image_ids       = open(os.path.join(VOCdevkit_path, "Segmentation/val.txt"),'r').read().splitlines() 
+    gt_dir          = os.path.join(VOCdevkit_path, "SegmentationClass/")
     miou_out_path   = "miou_out"
     pred_dir        = os.path.join(miou_out_path, 'detection-results')
 
@@ -49,7 +49,7 @@ if __name__ == "__main__":
 
         print("Get predict result.")
         for image_id in tqdm(image_ids):
-            image_path  = os.path.join(VOCdevkit_path, "VOC2007/JPEGImages/"+image_id+".jpg")
+            image_path  = os.path.join(VOCdevkit_path, "JPEGImages/"+image_id+".jpg")
             image       = Image.open(image_path)
             image       = deeplab.get_miou_png(image)
             image.save(os.path.join(pred_dir, image_id + ".png"))

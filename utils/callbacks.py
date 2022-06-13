@@ -24,7 +24,9 @@ class LossHistory():
         self.log_dir    = log_dir
         self.losses     = []
         self.val_loss   = []
-        
+        self.f_score = []
+        self.miou = []
+
         os.makedirs(self.log_dir)
         self.writer     = SummaryWriter(self.log_dir)
         try:
@@ -33,13 +35,14 @@ class LossHistory():
         except:
             pass
 
-    def append_loss(self, epoch, loss, val_loss):
+    def append_loss(self, epoch, loss, val_loss, f_score, miou):
         if not os.path.exists(self.log_dir):
             os.makedirs(self.log_dir)
 
         self.losses.append(loss)
         self.val_loss.append(val_loss)
-
+        self.f_score.append(f_score)
+        self.miou.append(miou)
         with open(os.path.join(self.log_dir, "epoch_loss.txt"), 'a') as f:
             f.write(str(loss))
             f.write("\n")
