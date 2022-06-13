@@ -592,6 +592,7 @@ def main(args):
                        'f_score': loss_history.f_score[-1],
                        'miou': loss_history.miou[-1]
                        })
+            wandb.save(os.path.join(loss_history.log_dir, "best_epoch_weights.pth"))
             # print(float(loss_history.f_score[-1]))
         if local_rank == 0:
             loss_history.writer.close()
