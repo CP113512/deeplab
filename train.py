@@ -246,55 +246,6 @@ os.environ['NO_PROXY'] = 'stackoverflow.com'
 # num_workers = 4
 
 
-def parse_args():
-    import argparse
-    parser = argparse.ArgumentParser(description="pytorch deeplabv3+ training")
-
-    parser.add_argument("--data-path", default="../three_datasets-AOP/datasets-ori", help="DRIVE root")
-    parser.add_argument("--model-path", default="model_data/deeplab_mobilenetv2.pth", help="")
-    parser.add_argument('--pretrained', default=False, type=bool, help='是否使用预训练权重')
-    # exclude background
-    parser.add_argument("--num-classes", default=5, type=int)
-    parser.add_argument("--num_workers", default=4, type=int)
-    parser.add_argument('--input-shape', type=int, default=512, help='train, val image size (pixels)')
-    parser.add_argument("--cuda", default=True, help="training device")
-
-    # parser.add_argument("--batch-size", default=4, type=int)
-    parser.add_argument('--Freeze-Train', default=True, type=bool, help='是否使用冻结主干网络训练')
-    parser.add_argument("--Freeze-batch-size", default=32, type=int)
-    parser.add_argument("--Unfreeze-batch-size", default=16, type=int)
-    parser.add_argument("--Init-Epoch", default=0, type=int, help="")
-    parser.add_argument("--Freeze-Epoch", default=0, type=int, help="")
-    parser.add_argument("--UnFreeze-Epoch", default=1, type=int, help="")
-    parser.add_argument("--Init-lr", default=7e-3, type=float, help="初始化学习率")
-    parser.add_argument("--momentum", default=0.9, type=float, help="优化器内部使用到的momentum参数")
-    parser.add_argument("--weight-decay", default=1e-4, type=float, help="权值衰减，可防止过拟合,"
-                                                                         "adam会导致weight_decay错误，使用adam时建议设置为0。")
-    parser.add_argument("--optimizer-type", default="sgd", type=str, help="")
-    parser.add_argument("--lr-decay-type", default="cos", type=str, help="使用到的学习率下降方式，可选的有'step'、'cos'")
-    parser.add_argument("--save-period", default=5, type=int, help="多少个epoch保存一次权值")
-    parser.add_argument("--eval-period", default=5, type=int, help="代表多少个epoch评估一次，不建议频繁的评估,"
-                                                                   "评估需要消耗较多的时间，频繁评估会导致训练非常慢")
-    parser.add_argument("--save-dir", default='logs', type=str, help="权值与日志文件保存的文件夹")
-
-    parser.add_argument("--downsample-factor", default=16, type=int, help='下采样的倍数8、16，8下采样的倍数较小/'
-                                                                          '理论上效果更好但也要求更大的显存')
-    parser.add_argument('--backbone', default='mobilenet', help='所使用的的主干网络：xception/mobilenet')
-    parser.add_argument('--lr', default=0.01, type=float, help='initial learning rate')
-    parser.add_argument('--print-freq', default=1, type=int, help='print frequency')
-    parser.add_argument('--resume', default='', help='resume from checkpoint')
-    parser.add_argument('--distributed', default=False, type=bool, help='用于指定是否使用单机多卡分布式运行')
-    parser.add_argument('--sync-bn', default=False, type=bool, help='是否使用sync_bn，DDP模式多卡可用')
-    parser.add_argument('--fp16', default=False, type=bool, help='是否使用混合精度训练')
-    parser.add_argument('--eval-flag', default=True, type=bool, help='是否在训练时进行评估，评估对象为验证集')
-    parser.add_argument('--focal_loss', default=False, type=bool, help='是否使用focal loss来防止正负样本不平衡')
-    parser.add_argument('--dice-loss', default=True, type=bool, help='建议选项：'
-                                                                     '种类少（几类）时，设置为True'
-                                                                     '种类多（十几类）时，如果batch_size比较大（10以上），那么设置为True'
-                                                                     '种类多（十几类）时，如果batch_size比较小（10以下），那么设置为False')
-
-    args = parser.parse_args()
-    return args
 def main(args):
     Min_lr = args.Init_lr * 0.01
     input_shape = [args.input_shape, args.input_shape]
@@ -527,6 +478,11 @@ def main(args):
                                             eval_flag=args.eval_flag, period=args.eval_period)
         else:
             eval_callback   = None
+        # 接受建议
+
+        if wanted_epoch > args.UnFreeze_Epoch:
+            args.UnFreeze_Epoch = int(wanted_epoch)
+
 
         #---------------------------------------#
         #   开始模型训练
@@ -598,13 +554,65 @@ def main(args):
         if local_rank == 0:
             loss_history.writer.close()
 
+
+def parse_args():
+    import argparse
+    parser = argparse.ArgumentParser(description="pytorch deeplabv3+ training")
+
+    parser.add_argument("--data-path", default="E:\data640\\new_all_ori\pure", help="DRIVE root")
+    parser.add_argument('--backbone', default='mobilenet', help='所使用的的主干网络：xception/mobilenet')
+    parser.add_argument("--model-path", default="model_data/deeplab_mobilenetv2.pth", help="")
+    parser.add_argument('--pretrained', default=False, type=bool, help='是否使用预训练权重')
+    # exclude background
+    parser.add_argument("--num-classes", default=5, type=int)
+    parser.add_argument("--num_workers", default=4, type=int)
+    parser.add_argument('--input-shape', type=int, default=512, help='train, val image size (pixels)')
+    parser.add_argument("--cuda", default=True, help="training device")
+
+    # parser.add_argument("--batch-size", default=4, type=int)
+    parser.add_argument('--Freeze-Train', default=True, type=bool, help='是否使用冻结主干网络训练')
+    parser.add_argument("--Freeze-batch-size", default=32, type=int)
+    parser.add_argument("--Unfreeze-batch-size", default=16, type=int)
+    parser.add_argument("--Init-Epoch", default=0, type=int, help="")
+    parser.add_argument("--Freeze-Epoch", default=50, type=int, help="")
+    parser.add_argument("--UnFreeze-Epoch", default=100, type=int, help="")
+    parser.add_argument("--Init-lr", default=7e-3, type=float, help="初始化学习率")
+    parser.add_argument("--momentum", default=0.9, type=float, help="优化器内部使用到的momentum参数")
+    parser.add_argument("--weight-decay", default=1e-4, type=float, help="权值衰减，可防止过拟合,"
+                                                                         "adam会导致weight_decay错误，使用adam时建议设置为0。")
+    parser.add_argument("--optimizer-type", default="sgd", type=str, help="")
+    parser.add_argument("--lr-decay-type", default="cos", type=str, help="使用到的学习率下降方式，可选的有'step'、'cos'")
+    parser.add_argument("--save-period", default=5, type=int, help="多少个epoch保存一次权值")
+    parser.add_argument("--eval-period", default=5, type=int, help="代表多少个epoch评估一次，不建议频繁的评估,"
+                                                                   "评估需要消耗较多的时间，频繁评估会导致训练非常慢")
+    parser.add_argument("--save-dir", default='logs', type=str, help="权值与日志文件保存的文件夹")
+
+    parser.add_argument("--downsample-factor", default=16, type=int, help='下采样的倍数8、16，8下采样的倍数较小/'
+                                                                          '理论上效果更好但也要求更大的显存')
+    parser.add_argument('--lr', default=0.01, type=float, help='initial learning rate')
+    parser.add_argument('--print-freq', default=1, type=int, help='print frequency')
+    parser.add_argument('--resume', default='', help='resume from checkpoint')
+    parser.add_argument('--distributed', default=False, type=bool, help='用于指定是否使用单机多卡分布式运行')
+    parser.add_argument('--sync-bn', default=False, type=bool, help='是否使用sync_bn，DDP模式多卡可用')
+    parser.add_argument('--fp16', default=False, type=bool, help='是否使用混合精度训练')
+    parser.add_argument('--eval-flag', default=True, type=bool, help='是否在训练时进行评估，评估对象为验证集')
+    parser.add_argument('--focal_loss', default=False, type=bool, help='是否使用focal loss来防止正负样本不平衡')
+    parser.add_argument('--dice-loss', default=True, type=bool, help='建议选项：'
+                                                                     '种类少（几类）时，设置为True'
+                                                                     '种类多（十几类）时，如果batch_size比较大（10以上），那么设置为True'
+                                                                     '种类多（十几类）时，如果batch_size比较小（10以下），那么设置为False')
+
+    args = parser.parse_args()
+    return args
+
+
 if __name__ == "__main__":
     wandb.init(
         project='rice-disease',
         entity='cpeng',
         reinit=True,
-        name='no4',
-        id='buvi'
+        name='new_ori_pure',
+        id='vegeyevidc'
     )
     args = parse_args()
     wandb.config.update(args)
