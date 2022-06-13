@@ -264,8 +264,8 @@ def parse_args():
     parser.add_argument("--Freeze-batch-size", default=32, type=int)
     parser.add_argument("--Unfreeze-batch-size", default=16, type=int)
     parser.add_argument("--Init-Epoch", default=0, type=int, help="")
-    parser.add_argument("--Freeze-Epoch", default=50, type=int, help="")
-    parser.add_argument("--UnFreeze-Epoch", default=100, type=int, help="")
+    parser.add_argument("--Freeze-Epoch", default=0, type=int, help="")
+    parser.add_argument("--UnFreeze-Epoch", default=1, type=int, help="")
     parser.add_argument("--Init-lr", default=7e-3, type=float, help="初始化学习率")
     parser.add_argument("--momentum", default=0.9, type=float, help="优化器内部使用到的momentum参数")
     parser.add_argument("--weight-decay", default=1e-4, type=float, help="权值衰减，可防止过拟合,"
@@ -592,7 +592,8 @@ def main(args):
                        'f_score': loss_history.f_score[-1],
                        'miou': loss_history.miou[-1]
                        })
-            wandb.save(os.path.join(loss_history.log_dir, "best_epoch_weights.pth"))
+            # s_path = os.path.join(loss_history.log_dir, "best_epoch_weights.pth")
+            wandb.save("best_epoch_weights.pth")
             # print(float(loss_history.f_score[-1]))
         if local_rank == 0:
             loss_history.writer.close()

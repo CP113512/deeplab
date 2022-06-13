@@ -1,6 +1,8 @@
 import os
 
 import torch
+import wandb
+
 from nets.deeplabv3_training import (CE_Loss, Dice_loss, Focal_Loss,
                                      weights_init)
 from tqdm import tqdm
@@ -174,6 +176,6 @@ def fit_one_epoch(model_train, model, loss_history, eval_callback, optimizer, ep
 
         if len(loss_history.val_loss) <= 1 or (val_loss / epoch_step_val) <= min(loss_history.val_loss):
             print('Save best model to best_epoch_weights.pth')
-            torch.save(save_file, os.path.join(loss_history.log_dir, "best_epoch_weights.pth"))
+            torch.save(save_file, os.path.join(wandb.run.dir, "best_epoch_weights.pth"))
 
         torch.save(save_file, os.path.join(loss_history.log_dir, "last_epoch_weights.pth"))
