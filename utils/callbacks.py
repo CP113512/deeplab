@@ -24,7 +24,9 @@ class LossHistory():
         self.log_dir    = log_dir
         self.losses     = []
         self.val_loss   = []
-        
+        self.f_score = []
+        self.miou = []
+
         os.makedirs(self.log_dir)
         self.writer     = SummaryWriter(self.log_dir)
         try:
@@ -33,13 +35,14 @@ class LossHistory():
         except:
             pass
 
-    def append_loss(self, epoch, loss, val_loss):
+    def append_loss(self, epoch, loss, val_loss, f_score, miou):
         if not os.path.exists(self.log_dir):
             os.makedirs(self.log_dir)
 
         self.losses.append(loss)
         self.val_loss.append(val_loss)
-
+        self.f_score.append(f_score)
+        self.miou.append(miou)
         with open(os.path.join(self.log_dir, "epoch_loss.txt"), 'a') as f:
             f.write(str(loss))
             f.write("\n")
@@ -153,7 +156,7 @@ class EvalCallback():
     def on_epoch_end(self, epoch, model_eval):
         if epoch % self.period == 0 and self.eval_flag:
             self.net    = model_eval
-            gt_dir      = os.path.join(self.dataset_path, "VOC2007/SegmentationClass/")
+            gt_dir      = os.path.join(self.dataset_path, "SegmentationClass/")
             pred_dir    = os.path.join(self.miou_out_path, 'detection-results')
             if not os.path.exists(self.miou_out_path):
                 os.makedirs(self.miou_out_path)
@@ -164,7 +167,7 @@ class EvalCallback():
                 #-------------------------------#
                 #   从文件中读取图像
                 #-------------------------------#
-                image_path  = os.path.join(self.dataset_path, "VOC2007/JPEGImages/"+image_id+".jpg")
+                image_path  = os.path.join(self.dataset_path, "JPEGImages/"+image_id+".jpg")
                 image       = Image.open(image_path)
                 #------------------------------#
                 #   获得预测txt

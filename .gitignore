@@ -4,10 +4,12 @@ miou_out/
 VOCdevkit/
 datasets/
 Medical_Datasets/
+datasets-cp/
 lfw/
 logs/
 model_data/
 .temp_miou_out/
+wandb/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -138,3 +140,4 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+.vscode/settings.json
