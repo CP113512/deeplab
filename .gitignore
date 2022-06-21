@@ -10,7 +10,7 @@ logs/
 model_data/
 .temp_miou_out/
 wandb/
-
+modelweight/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
