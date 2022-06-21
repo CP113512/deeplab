@@ -155,3 +155,6 @@ if __name__ == "__main__":
     model = mobilenetv2()
     for i, layer in enumerate(model.features):
         print(i, layer)
+    x = torch.randn((32, 3, 512, 512))
+    y = model(x)
+    print(y.shape)

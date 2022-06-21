@@ -3,13 +3,15 @@ import torch.nn as nn
 import torch.nn.functional as F
 from nets.xception import xception
 from nets.mobilenetv2 import mobilenetv2
+from nets.mbv2_ca import mbca
 
 class MobileNetV2(nn.Module):
     def __init__(self, downsample_factor=8, pretrained=True):
         super(MobileNetV2, self).__init__()
         from functools import partial
         
-        model           = mobilenetv2(pretrained)
+        model           = mbca(pretrained)
+        # model           = mobilenetv2(pretrained)
         self.features   = model.features[:-1]
 
         self.total_idx  = len(self.features)
@@ -48,7 +50,11 @@ class MobileNetV2(nn.Module):
         x = self.features[4:](low_level_features)
         return low_level_features, x 
 
-
+if __name__ == '__main__':
+    model = MobileNetV2(downsample_factor=16, pretrained=False)
+    x = torch.randn((16, 3, 512, 512))
+    y = model(x)
+    print(y)
 #-----------------------------------------#
 #   ASPP特征提取模块
 #   利用不同膨胀率的膨胀卷积进行特征提取
@@ -134,6 +140,11 @@ class DeepLab(nn.Module):
             self.backbone = MobileNetV2(downsample_factor=downsample_factor, pretrained=pretrained)
             in_channels = 320
             low_level_channels = 24
+        # elif backbone=="mbca":
+        #     self.backbone = mbca(pretrained=pretrained)
+        #     in_channels = 320
+        #     low_level_channels = 24
+
         else:
             raise ValueError('Unsupported backbone - `{}`, Use mobilenet, xception.'.format(backbone))
 

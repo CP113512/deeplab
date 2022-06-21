@@ -17,14 +17,14 @@ train_percent       = 0.9
 #   指向VOC数据集所在的文件夹
 #   默认指向根目录下的VOC数据集
 #-------------------------------------------------------#
-VOCdevkit_path      = 'E:\data640\\new_all\pure'
+VOCdevkit_path      = 'D:\yesy\新数据集\\new-cp\\new-cp-youfu'
 
 if __name__ == "__main__":
     random.seed(0)
     print("Generate txt in ImageSets.")
     segfilepath     = os.path.join(VOCdevkit_path, 'SegmentationClass')
     saveBasePath    = os.path.join(VOCdevkit_path, 'Segmentation')
-    
+
     temp_seg = os.listdir(segfilepath)
     total_seg = []
     for seg in temp_seg:

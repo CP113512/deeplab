@@ -20,6 +20,7 @@ from utils.utils_fit import fit_one_epoch
 # import notifyemail
 # os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 os.environ["WANDB_DISABLE_CODE"]="true"
+os.environ["WANDB_MODE"]="offline"
 os.environ['NO_PROXY'] = 'stackoverflow.com'
 
 '''
@@ -276,13 +277,13 @@ def main(args):
     #----------------------------------------------------#
     #   下载预训练权重
     #----------------------------------------------------#
-    if args.pretrained:
-        if args.distributed:
-            if local_rank == 0:
-                download_weights(args.backbone)
-            dist.barrier()
-        else:
-            download_weights(args.backbone)
+    # if args.pretrained:
+    #     if args.distributed:
+    #         if local_rank == 0:
+    #             download_weights(args.backbone)
+    #         dist.barrier()
+    #     else:
+    #         download_weights(args.backbone)
 
     model   = DeepLab(num_classes=args.num_classes, backbone=args.backbone, downsample_factor=args.downsample_factor, pretrained=args.pretrained)
     if not args.pretrained:
@@ -480,8 +481,8 @@ def main(args):
             eval_callback   = None
         # 接受建议
 
-        if wanted_epoch > args.UnFreeze_Epoch:
-            args.UnFreeze_Epoch = int(wanted_epoch)
+        # if wanted_epoch > args.UnFreeze_Epoch:
+        #     args.UnFreeze_Epoch = int(wanted_epoch)
 
 
         #---------------------------------------#
@@ -559,10 +560,10 @@ def parse_args():
     import argparse
     parser = argparse.ArgumentParser(description="pytorch deeplabv3+ training")
 
-    parser.add_argument("--data-path", default="E:\data640\\new_all_ori\pure", help="DRIVE root")
+    parser.add_argument("--data-path", default="D:\yesy\新数据集\\new-cp\\new-cp-youfu", help="DRIVE root")
     parser.add_argument('--backbone', default='mobilenet', help='所使用的的主干网络：xception/mobilenet')
     parser.add_argument("--model-path", default="model_data/deeplab_mobilenetv2.pth", help="")
-    parser.add_argument('--pretrained', default=False, type=bool, help='是否使用预训练权重')
+    parser.add_argument('--pretrained', default=True, type=bool, help='是否使用预训练权重')
     # exclude background
     parser.add_argument("--num-classes", default=5, type=int)
     parser.add_argument("--num_workers", default=4, type=int)
@@ -611,8 +612,8 @@ if __name__ == "__main__":
         project='rice-disease',
         entity='cpeng',
         reinit=True,
-        name='new_ori_pure',
-        id='vegeyevidc'
+        name='new-ct-youfu',
+        id='newctyoufu'
     )
     args = parse_args()
     wandb.config.update(args)
